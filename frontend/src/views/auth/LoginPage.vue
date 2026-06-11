@@ -9,7 +9,7 @@
         <div class="login-icon">
           <el-icon :size="36"><Monitor /></el-icon>
         </div>
-        <h1 class="login-title">区域人数管控统计系统</h1>
+        <h1 class="login-title">SmartFlow 智流云</h1>
         <p class="login-subtitle">工作人员登录</p>
       </div>
 

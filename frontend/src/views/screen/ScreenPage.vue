@@ -2,7 +2,7 @@
   <div class="screen-page">
     <!-- ========== 顶部 Header ========== -->
     <header class="screen-header">
-      <h1 class="title">区域人数管控统计系统</h1>
+      <h1 class="title">SmartFlow 智流云</h1>
       <p class="time">{{ currentTime }}</p>
       <div class="header-actions">
         <span class="fullscreen-hint">按 F11 或点击按钮进入全屏模式</span>

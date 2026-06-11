@@ -6,7 +6,7 @@
         <el-icon :size="28" color="#FFFFFF"><UserFilled /></el-icon>
         <h1>出场登记</h1>
       </div>
-      <p class="header-subtitle">大型活动区域人数管控系统</p>
+      <p class="header-subtitle">大型活动实时客流统计与管控平台</p>
     </header>
 
     <main class="page-main">

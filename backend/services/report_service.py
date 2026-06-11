@@ -81,7 +81,7 @@ async def export_to_excel(data: list[dict]) -> io.BytesIO:
 
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "人数统计报表"
+    ws.title = "SmartFlow 客流统计报表"
 
     # 表头
     ws.append(["日期/周期", "进场人数", "出场人数", "净增人数"])

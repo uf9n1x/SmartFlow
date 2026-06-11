@@ -49,8 +49,8 @@ async def lifespan(app: FastAPI):
 
 # 创建 FastAPI 应用实例
 app = FastAPI(
-    title="区域人数管控统计系统",
-    description="区域人数管控统计系统 API 服务",
+    title="SmartFlow 智流云",
+    description="SmartFlow 智流云 - 大型活动实时客流统计与管控平台 API",
     version="0.1.0",
     docs_url=None,      # 关闭 Swagger UI
     redoc_url=None,     # 关闭 ReDoc
@@ -73,4 +73,4 @@ app.include_router(v1_router, prefix="/api/v1")
 @app.get("/")
 async def root_health_check():
     """根路径健康检查接口"""
-    return {"status": "ok", "message": "区域人数管控统计系统运行中"}
+    return {"status": "ok", "message": "SmartFlow 智流云 运行中"}
