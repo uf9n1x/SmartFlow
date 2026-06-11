@@ -1,6 +1,6 @@
 # 前端 Dockerfile - 多阶段构建
 # 第一阶段：Node.js 构建 Vue3 + Vite 应用
-FROM node:18-alpine AS build-stage
+FROM node:22-alpine AS build-stage
 
 WORKDIR /app
 
