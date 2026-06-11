@@ -54,7 +54,16 @@
 
         <!-- 2. 进出场趋势图 -->
         <div class="chart-panel">
-          <h3 class="panel-title">进出场趋势</h3>
+          <div class="panel-header">
+            <h3 class="panel-title">进出场趋势</h3>
+            <el-select v-model="trendInterval" size="small" style="width: 110px" @change="fetchTrendData">
+              <el-option :value="10" label="10分钟" />
+              <el-option :value="30" label="30分钟" />
+              <el-option :value="60" label="1小时" />
+              <el-option :value="360" label="6小时" />
+              <el-option :value="1440" label="1天" />
+            </el-select>
+          </div>
           <v-chart class="chart" :option="lineChartOption" autoresize />
         </div>
 
@@ -288,12 +297,15 @@ interface TrendPoint {
   remainingCapacity: number
 }
 
+/** 趋势图时间间隔（分钟） */
+const trendInterval = ref(30)
+
 const trendData = ref<TrendPoint[]>([])
 
 /** 获取趋势数据 */
 const fetchTrendData = async () => {
   try {
-    const res = await axios.get('/api/v1/report/trend')
+    const res = await axios.get('/api/v1/report/trend', { params: { interval: trendInterval.value } })
     trendData.value = res.data.time_points || []
   } catch (err) {
     console.error('获取趋势数据失败', err)
@@ -658,6 +670,24 @@ $red-accent: #EF4444;
     width: 40px;
     height: 2px;
     background: $blue-accent;
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+
+  .panel-title {
+    margin: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    flex-shrink: 0;
+
+    &::after { display: none; }
   }
 }
 

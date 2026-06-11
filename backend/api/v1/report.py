@@ -48,6 +48,7 @@ async def export_report(
 @router.get("/trend")
 async def get_trend_data(
     date: str = Query(None, description="日期 YYYY-MM-DD，默认今天"),
+    interval: int = Query(30, ge=1, description="时间间隔(分钟): 10/30/60/360/1440"),
     db: AsyncSession = Depends(get_db),
 ):
     """获取当日每半小时当前人数趋势数据"""
@@ -60,12 +61,12 @@ async def get_trend_data(
     if not date:
         date = now.strftime("%Y-%m-%d")
 
-    # 生成时间点列表（08:00 到当前时间，每半小时）
+    # 生成时间点列表（按指定间隔）
     time_points = []
     current = today_start
     while current <= now:
-        time_points.append(current.strftime("%H:%M"))
-        current += timedelta(minutes=30)
+        time_points.append(current)
+        current += timedelta(minutes=interval)
 
     # 查询当日所有日志
     day_end = datetime.strptime(f"{date} 23:59:59", "%Y-%m-%d %H:%M:%S")
@@ -95,8 +96,7 @@ async def get_trend_data(
     current_people = base_count
     log_index = 0
 
-    for tp_str in time_points:
-        tp_dt = datetime.strptime(f"{date} {tp_str}:00", "%Y-%m-%d %H:%M:%S")
+    for tp_dt in time_points:
         # 累计到该时间点的日志
         while log_index < len(logs) and logs[log_index].created_at <= tp_dt:
             if logs[log_index].operation_type == OperationType.ENTRY:
@@ -105,8 +105,14 @@ async def get_trend_data(
                 current_people -= logs[log_index].count
             log_index += 1
 
+        # 格式化显示标签：小间隔显示时间，大间隔显示日期+时间
+        if interval >= 60:
+            label = tp_dt.strftime("%m/%d %H:%M")
+        else:
+            label = tp_dt.strftime("%H:%M")
+
         trend.append({
-            "time": tp_str,
+            "time": label,
             "currentPeople": max(0, current_people),
             "remainingCapacity": max(0, max_people - current_people),
         })
