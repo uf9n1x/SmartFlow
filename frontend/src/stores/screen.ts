@@ -11,6 +11,8 @@ export const useScreenStore = defineStore('screen', () => {
   const currentPeople = ref(0)
   /** 最大承载人数 */
   const maxPeople = ref(500)
+  /** 剩余容量（从 API/Ws 获取，避免前端计算不一致） */
+  const remainingCapacity = ref(500)
   /** 今日进场总人次 */
   const todayEntry = ref(0)
   /** 今日离场总人次 */
@@ -32,6 +34,7 @@ export const useScreenStore = defineStore('screen', () => {
       const res = await get('/dashboard')
       currentPeople.value = res.current_people || 0
       maxPeople.value = res.max_people || 500
+      remainingCapacity.value = res.remaining_capacity ?? (res.max_people || 500)
       todayEntry.value = res.today_entry || 0
       todayExit.value = res.today_exit || 0
       usageRate.value = res.usage_rate || 0
@@ -56,6 +59,7 @@ export const useScreenStore = defineStore('screen', () => {
   function updateFromWs(data: any) {
     if (data.current_people !== undefined) currentPeople.value = data.current_people
     if (data.max_people !== undefined) maxPeople.value = data.max_people
+    if (data.remaining_capacity !== undefined) remainingCapacity.value = data.remaining_capacity
     if (data.today_entry !== undefined) todayEntry.value = data.today_entry
     if (data.today_exit !== undefined) todayExit.value = data.today_exit
     if (data.usage_rate !== undefined) usageRate.value = data.usage_rate
@@ -64,6 +68,7 @@ export const useScreenStore = defineStore('screen', () => {
   return {
     currentPeople,
     maxPeople,
+    remainingCapacity,
     todayEntry,
     todayExit,
     usageRate,

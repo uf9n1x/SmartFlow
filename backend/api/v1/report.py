@@ -4,7 +4,7 @@ from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import StreamingResponse
-from sqlalchemy import select
+from sqlalchemy import select, func, case
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
@@ -76,9 +76,23 @@ async def get_trend_data(
     )
     logs = result.scalars().all()
 
+    # 计算当日初始基线：截止昨天结束时的累计净增
+    # 查询 TodayStart 之前的所有日志，计算净增作为趋势起点
+    history_result = await db.execute(
+        select(
+            func.coalesce(func.sum(
+                case(
+                    (PeopleLog.operation_type == "entry", PeopleLog.count),
+                    else_=-PeopleLog.count
+                )
+            ), 0)
+        ).where(PeopleLog.created_at < today_start)
+    )
+    base_count = int(history_result.scalar() or 0)
+
     # 计算每个时间点的当前人数
     trend = []
-    current_people = 0
+    current_people = base_count
     log_index = 0
 
     for tp_str in time_points:

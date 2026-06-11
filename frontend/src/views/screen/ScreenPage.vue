@@ -34,7 +34,7 @@
               <el-icon :size="28"><Odometer /></el-icon>
             </div>
             <div class="kpi-content">
-              <div class="kpi-value">{{ remainingCapacity }}</div>
+              <div class="kpi-value">{{ store.remainingCapacity }}</div>
               <div class="kpi-label">剩余容量</div>
             </div>
           </div>
@@ -227,12 +227,7 @@ function onFullscreenChange() {
   isFullscreen.value = !!document.fullscreenElement
 }
 
-// ============ 剩余容量 ============
-const remainingCapacity = computed(() => {
-  return store.maxPeople - store.currentPeople
-})
-
-/** 根据使用率返回容量状态类名 */
+// ============ 全屏 ============
 const capacityStatus = computed(() => {
   if (store.usageRate >= 90) return 'danger'
   if (store.usageRate >= 70) return 'warning'
@@ -332,6 +327,7 @@ const lineChartOption = computed(() => ({
   yAxis: {
     type: 'value',
     name: '人数',
+    min: 0,
     nameTextStyle: { color: '#94A3B8', fontSize: 11 },
     axisLabel: { color: '#94A3B8' },
     splitLine: { lineStyle: { color: 'rgba(148,163,184,0.1)' } }
@@ -667,12 +663,12 @@ $red-accent: #EF4444;
 
 .chart {
   flex: 1;
-  min-height: calc(100vh - 35vw);
+  min-height: 0;
 }
 
 .chart-pie {
-  max-height: calc(100vh - 28vw);
-  min-height: calc(100vh - 35vw);
+  flex: 1;
+  min-height: 0;
 }
 
 /* ========== 右侧面板（38%） ========== */
