@@ -1,0 +1,110 @@
+# Docker Compose 编排文件
+# 一键启动 MySQL、Redis、后端（FastAPI）、前端（Nginx + Vue3）
+version: '3.8'
+
+services:
+  # ============================
+  # MySQL 数据库服务
+  # ============================
+  mysql:
+    image: mysql:8.0
+    container_name: people_counting_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-people_counting}
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # ============================
+  # Redis 缓存服务
+  # ============================
+  redis:
+    image: redis:7-alpine
+    container_name: people_counting_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # ============================
+  # 后端 FastAPI 服务
+  # ============================
+  backend:
+    build: ./backend
+    container_name: people_counting_backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # 数据库连接（容器内通过服务名 mysql 访问）
+      DATABASE_URL: mysql+aiomysql://root:${MYSQL_ROOT_PASSWORD:-password}@mysql:3306/${MYSQL_DATABASE:-people_counting}
+      REDIS_URL: redis://redis:6379/0
+      # JWT 安全配置
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 480
+      # 业务配置
+      MAX_PEOPLE: ${MAX_PEOPLE:-500}
+      RATE_LIMIT_SECONDS: ${RATE_LIMIT_SECONDS:-10}
+      MAX_VISITOR_COUNT: ${MAX_VISITOR_COUNT:-10}
+      MAX_STAFF_COUNT: ${MAX_STAFF_COUNT:-50}
+      # 默认管理员账号（首次启动自动创建，已在数据库中存在则忽略）
+      DEFAULT_ADMIN_USERNAME: ${DEFAULT_ADMIN_USERNAME:-admin}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin123}
+      TZ: Asia/Shanghai
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  # ============================
+  # 前端 Nginx + Vue3 服务
+  # ============================
+  frontend:
+    build: ./frontend
+    container_name: people_counting_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+# ============================
+# 持久化数据卷
+# ============================
+volumes:
+  mysql_data:
+  redis_data:
+
+# ============================
+# 自定义桥接网络
+# ============================
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,97 @@
+// ========== 公安蓝全局样式 ==========
+// 变量定义已移至 _variables.scss，本文件仅含 CSS 输出
+
+// Element Plus 颜色覆盖
+:root {
+  --el-color-primary: #1E3A8A;
+  --el-color-primary-light-3: #3B5BA8;
+  --el-color-primary-light-5: #5C7CC4;
+  --el-color-primary-light-7: #8A9FD8;
+  --el-color-primary-light-9: #C7D3EE;
+  --el-color-primary-dark-2: #182E6E;
+  --el-color-success: #22C55E;
+  --el-color-warning: #F59E0B;
+  --el-color-danger: #EF4444;
+  --el-color-info: #3B82F6;
+  --el-bg-color: #F8FAFC;
+  --el-bg-color-overlay: #FFFFFF;
+  --el-text-color-primary: #020617;
+  --el-text-color-regular: #475569;
+  --el-border-color: #E2E8F0;
+  --el-border-radius-base: 8px;
+}
+
+// 深色主题（大屏用）
+.dark-theme {
+  --el-bg-color: #0F172A;
+  --el-bg-color-overlay: #1E293B;
+  --el-text-color-primary: #F8FAFC;
+  --el-text-color-regular: #CBD5E1;
+  --el-border-color: #334155;
+}
+
+// 全局样式重置
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: #F8FAFC;
+  color: #020617;
+  -webkit-font-smoothing: antialiased;
+}
+
+// 公安蓝渐变按钮
+.btn-police {
+  background: linear-gradient(135deg, #1E3A8A, #0369A1);
+  color: white;
+  border: none;
+
+  &:hover {
+    background: linear-gradient(135deg, #182E6E, #025B8C);
+  }
+}
+
+// KPI 卡片
+.kpi-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border-left: 4px solid #1E3A8A;
+
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1E3A8A;
+  }
+
+  .kpi-label {
+    font-size: 14px;
+    color: #475569;
+    margin-top: 8px;
+  }
+
+  &.success {
+    border-left-color: #22C55E;
+  }
+  &.warning {
+    border-left-color: #F59E0B;
+  }
+  &.danger {
+    border-left-color: #EF4444;
+  }
+}
+
+// 公安风格边框容器
+.police-container {
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  background: #FFFFFF;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}

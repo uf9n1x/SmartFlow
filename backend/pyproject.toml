@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "people-counting-system"
+version = "0.1.0"
+description = "区域人数管控统计系统 - 后端服务"
+requires-python = ">=3.12"
+authors = [
+    {name = "Developer"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+    "pytest-asyncio>=0.23",
+]
+
+[tool.setuptools]
+packages = ["api", "api.v1", "core", "models", "schemas", "services", "tests"]
+package-dir = {"" = "."}
