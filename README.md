@@ -68,7 +68,7 @@ docker-compose up -d
 
 ```bash
 # 将项目代码解压或克隆到本地目录，例如：
-cd D:\Mytools\Code_editor\All_code_project\区域人数管控统计系统
+cd 项目根目录
 ```
 
 #### 第二步：创建 MySQL 数据库

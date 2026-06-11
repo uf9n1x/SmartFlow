@@ -253,7 +253,7 @@ SECRET_KEY=change-me-to-a-secure-random-secret-key
 
 ```powershell
 # 确保在项目根目录（有 backend/ 子目录的地方）
-cd D:\Mytools\Code_editor\All_code_project\区域人数管控统计系统
+cd 项目根目录
 
 # 创建虚拟环境
 python -m venv .venv
