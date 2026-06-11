@@ -460,6 +460,8 @@ $red-accent: #EF4444;
 .screen-page {
   width: 100vw;
   height: 100vh;
+  max-width: 2560px;
+  margin: 0 auto;
   background: $bg-dark;
   background-image:
     linear-gradient(rgba(30, 58, 138, 0.05) 1px, transparent 1px),
@@ -477,14 +479,14 @@ $red-accent: #EF4444;
 /* ========== Header ========== */
 .screen-header {
   text-align: center;
-  padding: 6px 0 14px;
+  padding: 0.8vw 1.6vw;
   border-bottom: 2px solid rgba(30, 58, 138, 0.5);
   margin-bottom: 14px;
   position: relative;
   flex-shrink: 0;
 
   .title {
-    font-size: 30px;
+    font-size: clamp(18px, 1.6vw, 28px);
     font-weight: 700;
     letter-spacing: 8px;
     background: linear-gradient(180deg, #F8FAFC 0%, #94A3B8 100%);
@@ -533,7 +535,8 @@ $red-accent: #EF4444;
 .screen-body {
   flex: 1;
   display: flex;
-  gap: 16px;
+  gap: 1vw;
+  padding: 0 1vw;
   min-height: 0;
 }
 
@@ -543,13 +546,13 @@ $red-accent: #EF4444;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1vw;
 }
 
 /* ========== KPI 卡片行 ========== */
 .kpi-row {
   display: flex;
-  gap: 14px;
+  gap: 1vw;
   flex-shrink: 0;
 }
 
@@ -558,7 +561,7 @@ $red-accent: #EF4444;
   background: $card-bg;
   border: 1px solid $border-color;
   border-radius: 8px;
-  padding: 16px 20px;
+  padding: 1vw 1.4vw;
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
@@ -582,14 +585,14 @@ $red-accent: #EF4444;
   }
 
   .kpi-value {
-    font-size: 36px;
+    font-size: clamp(24px, 2.2vw, 40px);
     font-weight: 700;
     color: $text-primary;
     line-height: 1.1;
   }
 
   .kpi-label {
-    font-size: 13px;
+    font-size: clamp(11px, 0.9vw, 14px);
     color: $text-secondary;
     margin-top: 4px;
     letter-spacing: 1px;
@@ -664,17 +667,18 @@ $red-accent: #EF4444;
 
 .chart {
   flex: 1;
-  min-height: 0;
+  min-height: calc(100vh - 35vw);
 }
 
 .chart-pie {
-  max-height: 220px;
+  max-height: calc(100vh - 28vw);
+  min-height: calc(100vh - 35vw);
 }
 
 /* ========== 右侧面板（38%） ========== */
 .right-panel {
-  flex: 0 0 22%;
-  min-width: 220px;
+  flex: 0 0 clamp(280px, 22%, 400px);
+  min-width: 260px;
   display: flex;
   flex-direction: column;
 }

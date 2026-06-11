@@ -774,12 +774,27 @@ watch(wsData, (newData) => {
 // ========== 响应式 ==========
 @media (max-width: 768px) {
   .dashboard-header {
-    padding: 0 16px;
-    height: 56px;
+    padding: 8px 12px;
+    height: auto;
 
     .header-title {
-      font-size: 16px;
+      font-size: 15px;
       gap: 6px;
+    }
+
+    .header-right {
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: flex-end;
+
+      .el-button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .el-tag {
+        font-size: 11px;
+      }
     }
   }
 
@@ -802,6 +817,32 @@ watch(wsData, (newData) => {
   .usage-card .usage-progress-wrap {
     flex-direction: column;
     gap: 12px;
+  }
+}
+
+// ========== 超窄屏响应式 (480px 以下) ==========
+@media (max-width: 480px) {
+  .dashboard-header {
+    .header-time {
+      display: none;
+    }
+
+    .ws-indicator {
+      font-size: 10px;
+    }
+
+    .nav-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+
+      .el-icon {
+        font-size: 14px;
+      }
+    }
+
+    .logout-btn {
+      font-size: 12px !important;
+    }
   }
 }
 </style>

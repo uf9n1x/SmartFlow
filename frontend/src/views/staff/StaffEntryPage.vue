@@ -392,12 +392,41 @@ async function handleCustomEntry() {
 
 /* 响应式 */
 @media (max-width: 768px) {
+  .staff-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 12px;
+  }
+
+  .staff-header h1 {
+    font-size: 15px;
+  }
+
+  .header-nav {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
   .capacity-cards {
-    flex-direction: column;
     gap: 8px;
   }
 
+  .cap-card {
+    padding: 8px 6px;
+  }
+
+  .cap-value {
+    font-size: 20px;
+  }
+
+  .cap-label {
+    font-size: 11px;
+  }
+
   .card-section {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
     backdrop-filter: none;
     background: #FFFFFF;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
