@@ -315,8 +315,8 @@
  * 数据监控面板页面
  * 实时展示区域人数统计 KPI 指标，支持 WebSocket 实时推送
  */
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { UserFilled, CircleCheckFilled, Top, Bottom, UploadFilled, Download, DataAnalysis, EditPen, WarningFilled, Monitor, User, ArrowDown, SwitchButton, Edit, Setting, PieChart } from '@element-plus/icons-vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { UserFilled, CircleCheckFilled, Top, Bottom, UploadFilled, Download, DataAnalysis, EditPen, WarningFilled, Monitor, User, ArrowDown, SwitchButton, Edit, Setting, PieChart, Odometer } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { put } from '@/utils/request'
 import { useWebSocket } from '@/composables/useWebSocket'
@@ -410,18 +410,6 @@ function formatTime(date: Date): string {
   const s = String(date.getSeconds()).padStart(2, '0')
   return `${h}:${m}:${s}`
 }
-
-/**
- * 使用率进度条颜色
- * 低于 60% 绿色，60%-80% 橙色，80% 以上红色
- */
-const usageProgressColor = computed(() => {
-  const rate = store.usageRate
-  if (rate >= 90) return '#EF4444'
-  if (rate >= 80) return '#F59E0B'
-  if (rate >= 60) return '#3B82F6'
-  return '#22C55E'
-})
 
 // ========== 生命周期 ==========
 

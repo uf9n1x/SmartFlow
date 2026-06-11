@@ -256,7 +256,7 @@ class TestVisitorExit:
         from api.v1.visitor import router as visitor_router
 
         self._ensure_visitor_router(app, visitor_router)
-        TestVisitorEntry._create_visitor_test_client(mock_redis, mock_db, app)
+        _create_visitor_test_client(mock_redis, mock_db, app)
 
         dashboard_mock = {"current_people": 95, "max_people": 500}
         with patch('api.v1.visitor.get_dashboard_data', new=AsyncMock(return_value=dashboard_mock)):
@@ -289,7 +289,7 @@ class TestVisitorExit:
         from api.v1.visitor import router as visitor_router
 
         self._ensure_visitor_router(app, visitor_router)
-        TestVisitorEntry._create_visitor_test_client(mock_redis, mock_db, app)
+        _create_visitor_test_client(mock_redis, mock_db, app)
 
         with patch('core.redis.get_redis', new=AsyncMock(return_value=mock_redis)):
             with patch('core.redis.disconnect_redis', new=AsyncMock()):

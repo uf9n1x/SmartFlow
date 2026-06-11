@@ -33,6 +33,17 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    // 提高大文件警告阈值（ECharts 等图表库体积较大属正常）
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      onwarn(warning: { code?: string; message: string }, warn: (w: typeof warning) => void) {
+        // 忽略第三方库 @vueuse/core 的 PURE 注释兼容性警告
+        if (warning.code === 'INVALID_ANNOTATION') return
+        warn(warning)
+      },
+    },
+  },
   server: {
     host: '0.0.0.0',
     proxy: {

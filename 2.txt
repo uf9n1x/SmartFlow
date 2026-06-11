@@ -1,0 +1,51 @@
+[root@iZ2zehlji38rosjnnvkropZ SmartFlow]# docker compose up -d --build
+WARN[0000] /root/mytools/SmartFlow/docker-compose.yml: `version` is obsolete 
+[+] Building 25.9s (25/27)                                                                                                                                                                  docker:default
+ => [backend internal] load build definition from Dockerfile                                                                                                                                          0.0s
+ => => transferring dockerfile: 1.03kB                                                                                                                                                                0.0s
+ => [backend internal] load metadata for docker.io/library/python:3.12-slim                                                                                                                           1.1s
+ => [backend internal] load .dockerignore                                                                                                                                                             0.0s
+ => => transferring context: 2B                                                                                                                                                                       0.0s
+ => [backend 1/7] FROM docker.io/library/python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203                                                                     0.0s
+ => [backend internal] load build context                                                                                                                                                             0.0s
+ => => transferring context: 87.92kB                                                                                                                                                                  0.0s
+ => CACHED [backend 2/7] WORKDIR /app                                                                                                                                                                 0.0s
+ => CACHED [backend 3/7] RUN sed -i 's@http://deb.debian.org@http://mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources     && sed -i 's@http://security.debian.org@http://mirrors.aliyun.c  0.0s
+ => CACHED [backend 4/7] RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/                                                                                                  0.0s
+ => CACHED [backend 5/7] COPY requirements.txt .                                                                                                                                                      0.0s
+ => CACHED [backend 6/7] RUN pip install --no-cache-dir -r requirements.txt                                                                                                                           0.0s
+ => CACHED [backend 7/7] COPY . .                                                                                                                                                                     0.0s
+ => [backend] exporting to image                                                                                                                                                                      0.0s
+ => => exporting layers                                                                                                                                                                               0.0s
+ => => writing image sha256:5cdf852199d1f0294af717c773e284eb97b3b79580eb3e5b79c6a524d16795d8                                                                                                          0.0s
+ => => naming to docker.io/library/smartflow-backend                                                                                                                                                  0.0s
+ => [frontend internal] load build definition from Dockerfile                                                                                                                                         0.0s
+ => => transferring dockerfile: 797B                                                                                                                                                                  0.0s
+ => [frontend internal] load metadata for docker.io/library/nginx:alpine                                                                                                                              1.1s
+ => [frontend internal] load metadata for docker.io/library/node:18-alpine                                                                                                                            1.0s
+ => [frontend internal] load .dockerignore                                                                                                                                                            0.0s
+ => => transferring context: 2B                                                                                                                                                                       0.0s
+ => [frontend build-stage 1/7] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e                                                          0.0s
+ => [frontend internal] load build context                                                                                                                                                            0.0s
+ => => transferring context: 254.01kB                                                                                                                                                                 0.0s
+ => CACHED [frontend stage-1 1/3] FROM docker.io/library/nginx:alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a                                                         0.0s
+ => CACHED [frontend build-stage 2/7] WORKDIR /app                                                                                                                                                    0.0s
+ => CACHED [frontend build-stage 3/7] RUN npm config set registry https://registry.npmmirror.com/                                                                                                     0.0s
+ => CACHED [frontend build-stage 4/7] COPY package*.json ./                                                                                                                                           0.0s
+ => CACHED [frontend build-stage 5/7] RUN npm ci                                                                                                                                                      0.0s
+ => CACHED [frontend build-stage 6/7] COPY . .                                                                                                                                                        0.0s
+ => ERROR [frontend build-stage 7/7] RUN npm run build                                                                                                                                               23.3s
+------
+ > [frontend build-stage 7/7] RUN npm run build:
+0.628 
+0.628 > frontend@0.0.0 build
+0.628 > vue-tsc -b && vite build
+0.628 
+20.29 src/App.vue(8,18): error TS7016: Could not find a declaration file for module 'element-plus/dist/locale/zh-cn.mjs'. '/app/node_modules/element-plus/dist/locale/zh-cn.mjs' implicitly has an 'any' type.
+20.29   If the 'element-plus' package actually exposes this module, try adding a new declaration (.d.ts) file containing `declare module 'element-plus/dist/locale/zh-cn.mjs';`
+20.29 src/main.ts(5,18): error TS7016: Could not find a declaration file for module 'element-plus/dist/locale/zh-cn.mjs'. '/app/node_modules/element-plus/dist/locale/zh-cn.mjs' implicitly has an 'any' type.
+20.29   If the 'element-plus' package actually exposes this module, try adding a new declaration (.d.ts) file containing `declare module 'element-plus/dist/locale/zh-cn.mjs';`
+20.29 src/views/dashboard/DashboardPage.vue(418,7): error TS6133: 'usageProgressColor' is declared but its value is never read.
+------
+failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 2
+[root@iZ2zehlji38rosjnnvkropZ SmartFlow]# 

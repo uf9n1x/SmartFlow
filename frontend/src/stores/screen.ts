@@ -28,13 +28,16 @@ export const useScreenStore = defineStore('screen', () => {
    */
   async function fetchScreenData() {
     loading.value = true
-    const res = await get('/dashboard')
-    currentPeople.value = res.current_people || 0
-    maxPeople.value = res.max_people || 500
-    todayEntry.value = res.today_entry || 0
-    todayExit.value = res.today_exit || 0
-    usageRate.value = res.usage_rate || 0
-    loading.value = false
+    try {
+      const res = await get('/dashboard')
+      currentPeople.value = res.current_people || 0
+      maxPeople.value = res.max_people || 500
+      todayEntry.value = res.today_entry || 0
+      todayExit.value = res.today_exit || 0
+      usageRate.value = res.usage_rate || 0
+    } finally {
+      loading.value = false
+    }
   }
 
   /**
