@@ -4,11 +4,11 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-smartflow-blue?logo=github)](https://github.com/your-org/smartflow)
 
-基于 FastAPI + Vue3 + Redis + MySQL 的大型活动人数实时统计与管控系统，适用于展会、景区、庙会、市集等场景。
+基于 FastAPI + Vue3 + Redis + MySQL 的大型活动实时客流统计与管控平台，适用于展会、景区、庙会、市集等场景。
 
 ## 核心功能
 
-- **游客扫码登记**：游客通过二维码扫码自主登记进场/出场，每人每次1~10人
+- **游客扫码登记**：游客通过二维码扫码自主登记进场/出场，每人每次1\~10人
 - **工作人员快速登记**：工作人员登录后使用快捷按钮（+1/+2/+3/+5/+10）快速登记
 - **实时 Dashboard**：WebSocket 实时推送当前人数、进出场数据等
 - **大屏展示**：全屏数据大屏，饼图、趋势图、操作记录实时滚动
@@ -17,20 +17,20 @@
 
 ## 技术栈
 
-| 层级 | 技术 |
-|------|------|
-| 后端框架 | Python 3.12 + FastAPI |
-| ORM | SQLAlchemy 2.0（异步） |
-| 缓存 | Redis 7（原子计数器） |
-| 数据库 | MySQL 8.0 |
-| 认证 | JWT |
-| 前端框架 | Vue 3 + TypeScript |
-| UI 组件库 | Element Plus |
-| 构建工具 | Vite |
-| 图表 | ECharts |
-| 状态管理 | Pinia |
-| 实时通信 | WebSocket |
-| 部署 | Docker + Docker Compose + Nginx |
+| 层级     | 技术                              |
+| ------ | ------------------------------- |
+| 后端框架   | Python 3.12 + FastAPI           |
+| ORM    | SQLAlchemy 2.0（异步）              |
+| 缓存     | Redis 7（原子计数器）                  |
+| 数据库    | MySQL 8.0                       |
+| 认证     | JWT                             |
+| 前端框架   | Vue 3 + TypeScript              |
+| UI 组件库 | Element Plus                    |
+| 构建工具   | Vite                            |
+| 图表     | ECharts                         |
+| 状态管理   | Pinia                           |
+| 实时通信   | WebSocket                       |
+| 部署     | Docker + Docker Compose + Nginx |
 
 ## 快速开始
 
@@ -55,14 +55,15 @@ docker-compose up -d
 
 部署前请确保已安装以下软件服务：
 
-| 软件 | 最低版本 | 用途 | 下载/安装地址 |
-|------|----------|------|---------------|
-| Python | 3.12+ | 后端运行环境 | https://www.python.org/downloads/ |
-| Node.js | 18+ | 前端构建与运行 | https://nodejs.org/（推荐 LTS 版本） |
-| MySQL | 8.0+ | 数据持久化存储 | https://dev.mysql.com/downloads/ |
-| Redis | 7+ | 缓存与实时计数器 | https://redis.io/download/ |
+| 软件      | 最低版本  | 用途       | 下载/安装地址                             |
+| ------- | ----- | -------- | ----------------------------------- |
+| Python  | 3.12+ | 后端运行环境   | <https://www.python.org/downloads/> |
+| Node.js | 18+   | 前端构建与运行  | <https://nodejs.org/（推荐> LTS 版本）    |
+| MySQL   | 8.0+  | 数据持久化存储  | <https://dev.mysql.com/downloads/>  |
+| Redis   | 7+    | 缓存与实时计数器 | <https://redis.io/download/>        |
 
 > **Windows 用户注意**：MySQL 和 Redis 在 Windows 上可通过以下方式安装：
+>
 > - MySQL：下载 MySQL Installer for Windows
 > - Redis：从 [MicrosoftArchive/redis](https://github.com/microsoftarchive/redis/releases) 下载 Windows 版，或使用 Docker 单独运行 Redis
 >
@@ -89,12 +90,14 @@ CREATE DATABASE IF NOT EXISTS people_counting
 命令行方式：
 
 **Windows:**
+
 ```powershell
 mysql -u root -p
 # 输入 root 密码后，执行上面的 CREATE DATABASE 语句
 ```
 
 **Linux:**
+
 ```bash
 sudo mysql -u root -p
 # 输入密码后执行 CREATE DATABASE 语句
@@ -163,6 +166,7 @@ cd ..
 #### 第六步：启动 Redis 和 MySQL 服务
 
 **Windows：**
+
 ```powershell
 # 检查 Redis 是否在运行
 netstat -ano | findstr :6379
@@ -176,6 +180,7 @@ net start MySQL80
 ```
 
 **Linux：**
+
 ```bash
 sudo systemctl start redis
 sudo systemctl start mysql
@@ -184,6 +189,7 @@ sudo systemctl start mysql
 #### 第七步：启动后端 API 服务
 
 **Windows：**
+
 ```powershell
 .venv\Scripts\activate
 cd backend
@@ -191,6 +197,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Linux：**
+
 ```bash
 source .venv/bin/activate
 cd backend
@@ -215,16 +222,16 @@ npm run dev
 
 #### 第九步：访问系统
 
-| 地址 | 页面 | 说明 |
-|------|------|------|
-| http://localhost:5173/entry | 游客进场登记 | 手机扫码访问 |
-| http://localhost:5173/exit | 游客出场登记 | 手机扫码访问 |
-| http://localhost:5173/login | 工作人员登录 | 账号: admin / admin123 |
-| http://localhost:5173/staff/entry | 入口工作人员 | 需登录 |
-| http://localhost:5173/staff/exit | 出口工作人员 | 需登录 |
-| http://localhost:5173/dashboard | 数据监控面板 | 需登录 |
-| http://localhost:5173/screen | 大屏展示 | 1920x1080 全屏 |
-| http://localhost:5173/admin/config | 活动配置管理 | 需管理员 |
+| 地址                                   | 页面     | 说明                   |
+| ------------------------------------ | ------ | -------------------- |
+| <http://localhost:5173/entry>        | 游客进场登记 | 手机扫码访问               |
+| <http://localhost:5173/exit>         | 游客出场登记 | 手机扫码访问               |
+| <http://localhost:5173/login>        | 工作人员登录 | 账号: admin / admin123 |
+| <http://localhost:5173/staff/entry>  | 入口工作人员 | 需登录                  |
+| <http://localhost:5173/staff/exit>   | 出口工作人员 | 需登录                  |
+| <http://localhost:5173/dashboard>    | 数据监控面板 | 需登录                  |
+| <http://localhost:5173/screen>       | 大屏展示   | 1920x1080 全屏         |
+| <http://localhost:5173/admin/config> | 活动配置管理 | 需管理员                 |
 
 ### 方式三：使用启动脚本（简化）
 
@@ -237,7 +244,7 @@ chmod +x start.sh
 ./start.sh
 ```
 
----
+***
 
 ## VPS 生产环境部署
 
@@ -412,7 +419,7 @@ sudo ufw allow 8000/tcp
 sudo ufw enable
 ```
 
----
+***
 
 ## 生成游客扫码二维码
 
@@ -420,20 +427,21 @@ sudo ufw enable
 
 ### 二维码对应地址
 
-| 二维码 | URL | 放置位置 |
-|--------|-----|----------|
+| 二维码   | URL                  | 放置位置  |
+| ----- | -------------------- | ----- |
 | 进场二维码 | `https://你的域名/entry` | 活动入口处 |
-| 出场二维码 | `https://你的域名/exit` | 活动出口处 |
+| 出场二维码 | `https://你的域名/exit`  | 活动出口处 |
 
 ### 方式一：在线工具生成（最简单）
 
 访问以下任一在线二维码生成网站，输入对应 URL 即可：
 
-- https://cli.im/ （草料二维码，国内访问快）
-- https://www.qrcode-monkey.com/
-- https://qr.io/
+- <https://cli.im/> （草料二维码，国内访问快）
+- <https://www.qrcode-monkey.com/>
+- <https://qr.io/>
 
 **建议设置：**
+
 - 容错级别：M 或 H（防止打印模糊导致扫不出）
 - 尺寸：至少 300x300 像素
 - 可在二维码下方添加文字说明："扫码进场" / "扫码出场"
@@ -499,17 +507,17 @@ const entryUrl = `${window.location.origin}/entry`
 4. **放置**：入口/出口显眼位置，高度约 1.2-1.5 米（方便手机扫描）
 5. **备用**：准备 2-3 份备用二维码，防止损坏
 
----
+***
 
 ## 默认账号
 
-| 角色 | 用户名 | 密码 |
-|------|--------|------|
+| 角色  | 用户名   | 密码       |
+| --- | ----- | -------- |
 | 管理员 | admin | admin123 |
 
 > **安全提示**：生产环境部署后，请立即登录系统修改默认密码！
 
----
+***
 
 ## 常用运维命令
 
@@ -540,24 +548,24 @@ docker compose exec backend bash
 docker compose exec mysql mysql -u root -p
 ```
 
----
+***
 
 ## 页面路由
 
-| 路由 | 页面 | 权限 | 用途 |
-|------|------|------|------|
-| /entry | 游客进场登记 | 公开 | 入口二维码指向此页 |
-| /exit | 游客出场登记 | 公开 | 出口二维码指向此页 |
-| /login | 工作人员登录 | 公开 | 工作人员登录入口 |
-| /staff/entry | 入口工作人员 | JWT | 工作人员快速登记进场 |
-| /staff/exit | 出口工作人员 | JWT | 工作人员快速登记出场 |
-| /dashboard | 数据监控面板 | JWT | 实时数据监控 |
-| /screen | 大屏展示 | 公开 | 投屏到大屏幕 |
-| /admin/config | 活动配置管理 | 管理员 | 修改人数上限等 |
-| /admin/logs | 操作日志审计 | 管理员 | 查看操作记录 |
+| 路由            | 页面     | 权限  | 用途           |
+| ------------- | ------ | --- | ------------ |
+| /entry        | 游客进场登记 | 公开  | 入口二维码指向此页    |
+| /exit         | 游客出场登记 | 公开  | 出口二维码指向此页    |
+| /login        | 工作人员登录 | 公开  | 工作人员登录入口     |
+| /staff/entry  | 入口工作人员 | JWT | 工作人员快速登记进场   |
+| /staff/exit   | 出口工作人员 | JWT | 工作人员快速登记出场   |
+| /dashboard    | 数据监控面板 | JWT | 实时数据监控       |
+| /screen       | 大屏展示   | 公开  | 投屏到大屏幕       |
+| /admin/config | 活动配置管理 | 管理员 | 修改人数上限等      |
+| /admin/logs   | 操作日志审计 | 管理员 | 查看操作记录       |
 | /admin/report | 数据报表导出 | 管理员 | 导出 Excel/CSV |
 
----
+***
 
 ## 项目结构
 
@@ -598,3 +606,4 @@ docker compose exec mysql mysql -u root -p
 - [API 文档](docs/API.md)
 - [部署文档](docs/DEPLOY.md)
 - [数据库设计文档](docs/DB_DESIGN.md)
+
