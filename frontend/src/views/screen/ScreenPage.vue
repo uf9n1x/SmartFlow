@@ -349,6 +349,7 @@ const lineChartOption = computed(() => ({
       name: '当前人数',
       type: 'line',
       smooth: true,
+      showSymbol: false,
       data: trendData.value.map((d: any) => d.currentPeople),
       lineStyle: { color: '#3B82F6', width: 2 },
       itemStyle: { color: '#3B82F6' },
@@ -360,8 +361,9 @@ const lineChartOption = computed(() => ({
       name: '剩余容量',
       type: 'line',
       smooth: true,
+      showSymbol: false,
       data: trendData.value.map((d: any) => d.remainingCapacity),
-      lineStyle: { color: '#22C55E', width: 2, type: 'dashed' },
+      lineStyle: { color: '#22C55E', width: 2 },
       itemStyle: { color: '#22C55E' },
       areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
         colorStops: [{ offset: 0, color: 'rgba(34,197,94,0.2)' }, { offset: 1, color: 'rgba(34,197,94,0.02)' }]
