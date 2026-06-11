@@ -1,4 +1,8 @@
-# 大型活动区域人数统计与管控系统
+# SmartFlow 智流云
+
+> 大型活动实时客流统计与管控平台
+
+[![GitHub](https://img.shields.io/badge/GitHub-smartflow-blue?logo=github)](https://github.com/your-org/smartflow)
 
 基于 FastAPI + Vue3 + Redis + MySQL 的大型活动人数实时统计与管控系统，适用于展会、景区、庙会、市集等场景。
 
