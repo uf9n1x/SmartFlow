@@ -4,6 +4,9 @@ FROM node:18-alpine AS build-stage
 
 WORKDIR /app
 
+# 设置 npm 国内镜像源（国内 VPS 加速下载）
+RUN npm config set registry https://registry.npmmirror.com/
+
 # 复制依赖文件（需要 devDependencies 用于 vue-tsc、vite 等构建工具）
 COPY package*.json ./
 RUN npm ci
