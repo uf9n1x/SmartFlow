@@ -34,4 +34,4 @@ class PeopleLog(Base):
     count = Column(Integer, nullable=False, comment="人数")
     ip = Column(String(45), nullable=True, comment="客户端IP")
     user_agent = Column(String(500), nullable=True, comment="User-Agent")
-    created_at = Column(DateTime, server_default=func.now(), comment="操作时间")
+    created_at = Column(DateTime, server_default=func.now(), index=True, comment="操作时间")

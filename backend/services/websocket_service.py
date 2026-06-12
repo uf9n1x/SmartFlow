@@ -1,4 +1,5 @@
 """WebSocket 连接管理服务"""
+import asyncio
 from fastapi import WebSocket
 from typing import List
 import json
@@ -21,16 +22,26 @@ class ConnectionManager:
             self.active_connections.remove(websocket)
 
     async def broadcast(self, data: dict):
-        """向所有连接的客户端广播数据"""
-        dead_connections = []
+        """向所有连接的客户端并行广播数据（高并发优化）"""
+        if not self.active_connections:
+            return
+
         message = json.dumps(data, ensure_ascii=False)
-        for connection in self.active_connections:
+
+        async def _send(conn: WebSocket):
             try:
-                await connection.send_text(message)
+                await conn.send_text(message)
+                return None
             except Exception:
-                dead_connections.append(connection)
+                return conn
+
+        results = await asyncio.gather(
+            *[_send(c) for c in self.active_connections],
+            return_exceptions=True,
+        )
         # 清理断开的连接
-        for conn in dead_connections:
+        dead = [r for r in results if r is not None and not isinstance(r, BaseException)]
+        for conn in dead:
             self.active_connections.remove(conn)
 
     @property

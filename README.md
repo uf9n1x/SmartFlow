@@ -556,6 +556,58 @@ docker compose exec mysql mysql -u root -p
 
 ***
 
+## 大型活动部署建议
+
+> 10 万人级别的活动现场，以下建议确保系统稳定运行。
+
+### 服务器最低配置
+
+| 配置项 | 最低要求 | 建议值 |
+|--------|----------|--------|
+| CPU | 4 核 | 8 核 |
+| 内存 | 8 GB | 16 GB |
+| 带宽 | 10 Mbps | 50 Mbps |
+
+### 启动前检查
+
+```bash
+# 1. 确认 MySQL 最大连接数足够
+docker compose exec mysql mysql -u root -p -e "SHOW VARIABLES LIKE 'max_connections';"
+# 应 >= 150
+
+# 2. 确认 Redis 内存充足
+docker compose exec redis redis-cli CONFIG GET maxmemory
+
+# 3. 确认索引已创建
+docker compose exec mysql mysql -u root -p -e "SHOW INDEX FROM people_counting.people_logs;"
+# 应看到 created_at 索引
+
+# 4. 确认 WebSocket 连接正常
+# 浏览器访问 /dashboard 并登录，查看"实时连接"状态
+```
+
+### 活动前压力测试
+
+```bash
+# 使用 wrk 模拟并发请求（需先在 VPS 安装 wrk）
+wrk -t4 -c50 -d30s -s test.lua http://localhost/api/v1/visitor/entry
+
+# test.lua 内容:
+# wrk.method = "POST"
+# wrk.body   = '{"count": 3}'
+# wrk.headers["Content-Type"] = "application/json"
+```
+
+### 系统已内置的高并发优化
+
+- 数据库连接池上限 80（pool_size=30 + max_overflow=50）
+- 日志表 created_at 索引，聚合查询毫秒级响应
+- Nginx 4096 并发连接 + keepalive 复用 + gzip 压缩
+- WebSocket 并行广播，多屏同时推送不阻塞
+- Redis 原子计数器，保证数据一致性
+
+***
+
 ## 页面路由
 
 | 路由            | 页面     | 权限  | 用途           |
@@ -567,10 +619,8 @@ docker compose exec mysql mysql -u root -p
 | /staff/exit   | 出口工作人员 | 登录  | 工作人员快速登记出场   |
 | /dashboard    | 数据监控面板 | 管理员 | 实时数据监控       |
 | /screen       | 大屏展示   | 公开  | 投屏到大屏幕       |
-| /admin/config | 活动配置管理 | 管理员 | 修改人数上限等      |
 | /admin/users  | 账号管理   | 管理员 | 新增/禁用/删除账号   |
 | /admin/logs   | 操作日志审计 | 管理员 | 查看操作记录       |
-| /admin/report | 数据报表导出 | 管理员 | 导出 Excel/CSV |
 
 ***
 

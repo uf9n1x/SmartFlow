@@ -136,7 +136,7 @@ docker compose logs backend | grep -i "init"
 
 **4. 调整最大人数上限**
 
-访问 `http://你的IP/admin/config`（需管理员登录），修改 `max_people` 为活动实际上限。
+访问 `http://你的IP/dashboard`（需管理员登录），在仪表盘页面修改 `MAX_PEOPLE` 环境变量后重启服务。
 
 **5. 验证 WebSocket 实时推送**
 
@@ -320,7 +320,6 @@ npm run dev
 - 工作人员进场：http://localhost:5173/staff/entry
 - 数据监控面板：http://localhost:5173/dashboard
 - 账号管理：http://localhost:5173/admin/users
-- 活动配置：http://localhost:5173/admin/config
 - 大屏展示：http://localhost:5173/screen
 - API 文档：http://localhost:8000/docs
 
@@ -485,7 +484,6 @@ npm run dev
 - http://localhost:5173/dashboard — 数据监控面板
 - http://localhost:5173/screen — 大屏展示
 - http://localhost:5173/admin/users — 账号管理
-- http://localhost:5173/admin/config — 活动配置
 - http://localhost:8000/docs — API 文档
 
 ---
@@ -593,3 +591,61 @@ pm2 stop all         # 停止所有
 5. **配置 HTTPS**：用 Nginx 反向代理 + Let's Encrypt 免费证书
 6. **定期备份数据库**：`mysqldump -u root -p people_counting > backup.sql`
 7. **使用域名**：将域名 A 记录指向 VPS IP，Nginx 中配置 server_name
+
+---
+
+## 大型活动部署建议
+
+> 10 万人级别活动现场的额外注意事项。
+
+### 服务器最低配置
+
+| 配置项 | 最低要求 | 建议值 |
+|--------|----------|--------|
+| CPU | 4 核 | 8 核 |
+| 内存 | 8 GB | 16 GB |
+| 带宽 | 10 Mbps | 50 Mbps |
+
+### 启动前检查
+
+```bash
+# 1. 确认 MySQL 最大连接数 >= 150
+docker compose exec mysql mysql -u root -p -e "SHOW VARIABLES LIKE 'max_connections';"
+
+# 2. 确认索引已创建
+docker compose exec mysql mysql -u root -p -e "SHOW INDEX FROM people_counting.people_logs;"
+# 应看到 created_at 索引
+
+# 3. 确认 WebSocket 连接正常
+# 浏览器访问 /dashboard 并登录，查看顶部"实时连接"状态标签
+
+# 4. 检查所有容器健康状态
+docker compose ps
+# 所有服务应显示 healthy 或 running
+```
+
+### 活动前压力测试
+
+```bash
+# 安装 wrk
+sudo apt install -y wrk
+
+# 模拟并发进场请求
+cat > /tmp/test_entry.lua << 'EOF'
+wrk.method = "POST"
+wrk.body   = '{"count": 3}'
+wrk.headers["Content-Type"] = "application/json"
+EOF
+
+wrk -t4 -c50 -d30s -s /tmp/test_entry.lua http://localhost/api/v1/visitor/entry
+```
+
+### 系统已内置的高并发优化
+
+| 优化项 | 说明 |
+|--------|------|
+| 数据库连接池 | pool_size=30 + max_overflow=50，最大 80 连接 |
+| 日志索引 | people_logs 表 created_at 索引，聚合查询毫秒级 |
+| Nginx 优化 | 4096 并发连接、keepalive 复用、gzip 压缩 |
+| WebSocket | 并行广播，多屏同时推送不阻塞 |
+| 原子计数 | Redis INCRBY/DECRBY 保证数据一致性 |
