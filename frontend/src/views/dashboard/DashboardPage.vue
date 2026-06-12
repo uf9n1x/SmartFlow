@@ -61,9 +61,6 @@
               <el-dropdown-item divided>
                 <router-link to="/admin/logs">操作日志</router-link>
               </el-dropdown-item>
-              <el-dropdown-item divided>
-                <span class="reset-link" @click="handleResetCounter">数据重置</span>
-              </el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -337,8 +334,8 @@
  */
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { UserFilled, CircleCheckFilled, Top, Bottom, UploadFilled, Download, DataAnalysis, EditPen, WarningFilled, Monitor, User, ArrowDown, SwitchButton, Edit, Setting, PieChart, Odometer } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { put, post } from '@/utils/request'
+import { ElMessage } from 'element-plus'
+import { put } from '@/utils/request'
 import { useWebSocket } from '@/composables/useWebSocket'
 import { useDashboardStore } from '@/stores/dashboard'
 import { useAuthStore } from '@/stores/auth'
@@ -366,26 +363,6 @@ const router = useRouter()
 const handleLogout = () => {
   localStorage.removeItem('token')
   router.push('/login')
-}
-
-/**
- * 重置当前在场人数为零（管理员专用）
- */
-const handleResetCounter = async () => {
-  try {
-    await ElMessageBox.confirm(
-      '确认将当前在场人数清零？此操作会写入系统日志，不可撤销。',
-      '数据重置',
-      { confirmButtonText: '确认重置', cancelButtonText: '取消', type: 'warning' }
-    )
-    const res = await post('/admin/reset-counter')
-    ElMessage.success(res.message || '数据已重置')
-    store.fetchDashboard()
-  } catch (err: any) {
-    if (err !== 'cancel') {
-      ElMessage.error(err.response?.data?.detail || '重置失败')
-    }
-  }
 }
 
 /** 打开对话框时用当前 store 值填充 */

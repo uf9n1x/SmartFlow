@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
 from core.deps import get_current_user, require_admin
-from models.people_log import PeopleLog, OperationType, SourceType
 from schemas.user import UserCreate, UserOut
 from services import user_service as user_svc
 
@@ -61,41 +60,3 @@ async def remove_user(
         return {"message": "删除成功"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.post("/reset-counter")
-async def reset_counter(
-    db: AsyncSession = Depends(get_db),
-    current_user: dict = Depends(require_admin),
-):
-    """重置当前在场人数为 0（管理员专用）"""
-    from core.redis import redis_client
-    from api.v1.visitor import get_dashboard_data
-    from services.websocket_service import manager
-
-    current = await redis_client.get("activity:current_people")
-    current = int(current) if current else 0
-
-    if current <= 0:
-        return {"message": "当前人数已为 0，无需重置", "previous_count": 0}
-
-    # 写入系统操作日志（作为 exit，保持基线计算正确）
-    log = PeopleLog(
-        operation_type=OperationType.EXIT,
-        source_type=SourceType.STAFF,
-        count=current,
-        ip="system",
-        user_agent="admin-reset"
-    )
-    db.add(log)
-    await db.commit()
-
-    # Redis 清零
-    await redis_client.set("activity:current_people", 0)
-
-    # 广播更新到所有大屏
-    dashboard_data = await get_dashboard_data(db)
-    dashboard_data["current_people"] = 0
-    await manager.broadcast(dashboard_data)
-
-    return {"message": f"已重置，原在场人数: {current}", "previous_count": current}
