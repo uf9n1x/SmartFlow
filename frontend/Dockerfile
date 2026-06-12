@@ -21,8 +21,8 @@ FROM nginx:alpine
 # 复制构建产物到 Nginx 静态文件目录
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# 复制 Nginx 配置文件
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 复制 Nginx 主配置文件（包含 worker_processes、events、http 全局配置）
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 暴露前端端口
 EXPOSE 80
