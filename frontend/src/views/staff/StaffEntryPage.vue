@@ -5,10 +5,6 @@
       <el-icon :size="24"><Plus /></el-icon>
       <h1>进场登记 - 工作人员</h1>
       <div class="header-nav">
-        <router-link to="/dashboard" class="nav-btn">
-          <el-icon><DataAnalysis /></el-icon>
-          <span>仪表盘</span>
-        </router-link>
         <router-link to="/screen" class="nav-btn">
           <el-icon><Monitor /></el-icon>
           <span>大屏</span>
@@ -94,7 +90,7 @@
 /** 工作人员进场登记页面 - 公安蓝风格 */
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Plus, DataAnalysis, Monitor, SwitchButton } from '@element-plus/icons-vue'
+import { Plus, Monitor, SwitchButton } from '@element-plus/icons-vue'
 import { useStaffStore } from '@/stores/staff'
 
 const router = useRouter()

@@ -11,9 +11,9 @@
 |------|-------------|------|
 | 游客进场/出场 | 否 | 公开接口，IP 限频 10 秒 |
 | 工作人员进场/出场 | 是 | 需先登录获取 Token |
-| Dashboard 数据 | 否 | 公开接口，任何人都可查看 |
-| 活动配置查看 | 否 | 公开接口 |
-| 活动配置修改 | 是（管理员） | 需管理员角色 |
+| Dashboard 数据 | 否 | 公开接口（前端页面仅管理员可访问） |
+| 用户管理 | 是（管理员） | 需管理员角色 |
+| 活动配置 | 是（管理员） | 需管理员角色 |
 | 日志查询 | 是（管理员） | 需管理员角色 |
 | 报表导出 | 是（管理员） | 需管理员角色 |
 
@@ -248,3 +248,45 @@ wss://你的域名/ws/dashboard           # HTTPS（推荐）
 ```
 
 发送 `"ping"` 可收到 `"pong"` 心跳响应。
+
+### 12. 趋势数据
+GET /api/v1/report/trend?interval=30
+
+参数：
+- `date`：日期 YYYY-MM-DD（默认今天）
+- `interval`：时间间隔（分钟，默认 30，可选 10/30/60/360/1440）
+
+成功响应 200：
+```json
+{
+  "time_points": [
+    {"time": "08:00", "currentPeople": 45, "remainingCapacity": 455},
+    {"time": "08:30", "currentPeople": 52, "remainingCapacity": 448}
+  ]
+}
+```
+
+### 13. 用户管理（管理员）
+
+**获取用户列表：**
+GET /api/v1/admin/users
+
+成功响应 200：
+```json
+[
+  {"id": 1, "username": "admin", "role": "admin", "status": "active", "created_at": "2026-06-12T08:00:00"},
+  {"id": 2, "username": "staff1", "role": "staff", "status": "active", "created_at": "2026-06-12T09:00:00"}
+]
+```
+
+**新增用户：**
+POST /api/v1/admin/users
+```json
+{"username": "staff2", "password": "staff123", "role": "staff"}
+```
+
+**启用/禁用用户：**
+PUT /api/v1/admin/users/{id}/toggle
+
+**删除用户：**
+DELETE /api/v1/admin/users/{id}

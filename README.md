@@ -9,7 +9,8 @@
 ## 核心功能
 
 - **游客扫码登记**：游客通过二维码扫码自主登记进场/出场，每人每次1\~10人
-- **工作人员快速登记**：工作人员登录后使用快捷按钮（+1/+2/+3/+5/+10）快速登记
+- **工作人员快速登记**：工作人员登录后使用快捷按钮快速登记
+- **多角色用户管理**：管理员可在后台新增、禁用、删除工作人员账号
 - **实时 Dashboard**：WebSocket 实时推送当前人数、进出场数据等
 - **大屏展示**：全屏数据大屏，饼图、趋势图、操作记录实时滚动
 - **后台管理**：活动配置、日志审计、报表导出（Excel/CSV）
@@ -58,7 +59,7 @@ docker-compose up -d
 | 软件      | 最低版本  | 用途       | 下载/安装地址                             |
 | ------- | ----- | -------- | ----------------------------------- |
 | Python  | 3.12+ | 后端运行环境   | <https://www.python.org/downloads/> |
-| Node.js | 18+   | 前端构建与运行  | <https://nodejs.org/（推荐> LTS 版本）    |
+| Node.js | 20+   | 前端构建与运行  | <https://nodejs.org/（推荐> LTS 版本）    |
 | MySQL   | 8.0+  | 数据持久化存储  | <https://dev.mysql.com/downloads/>  |
 | Redis   | 7+    | 缓存与实时计数器 | <https://redis.io/download/>        |
 
@@ -229,9 +230,10 @@ npm run dev
 | <http://localhost:5173/login>        | 工作人员登录 | 账号: admin / admin123 |
 | <http://localhost:5173/staff/entry>  | 入口工作人员 | 需登录                  |
 | <http://localhost:5173/staff/exit>   | 出口工作人员 | 需登录                  |
-| <http://localhost:5173/dashboard>    | 数据监控面板 | 需登录                  |
+| <http://localhost:5173/dashboard>    | 数据监控面板 | 需管理员                 |
 | <http://localhost:5173/screen>       | 大屏展示   | 1920x1080 全屏         |
-| <http://localhost:5173/admin/config> | 活动配置管理 | 需管理员                 |
+| <http://localhost:5173/admin/users>  | 账号管理   | 需管理员                 |
+| <http://localhost:5173/admin/logs>   | 操作日志审计 | 需管理员                 |
 
 ### 方式三：使用启动脚本（简化）
 
@@ -517,6 +519,10 @@ const entryUrl = `${window.location.origin}/entry`
 
 > **安全提示**：生产环境部署后，请立即登录系统修改默认密码！
 
+### 添加工作人员账号
+
+管理员登录后访问 `/admin/users` 即可在后台页面中新增、禁用、删除工作人员账号，无需手动操作数据库。
+
 ***
 
 ## 常用运维命令
@@ -557,11 +563,12 @@ docker compose exec mysql mysql -u root -p
 | /entry        | 游客进场登记 | 公开  | 入口二维码指向此页    |
 | /exit         | 游客出场登记 | 公开  | 出口二维码指向此页    |
 | /login        | 工作人员登录 | 公开  | 工作人员登录入口     |
-| /staff/entry  | 入口工作人员 | JWT | 工作人员快速登记进场   |
-| /staff/exit   | 出口工作人员 | JWT | 工作人员快速登记出场   |
-| /dashboard    | 数据监控面板 | JWT | 实时数据监控       |
+| /staff/entry  | 入口工作人员 | 登录  | 工作人员快速登记进场   |
+| /staff/exit   | 出口工作人员 | 登录  | 工作人员快速登记出场   |
+| /dashboard    | 数据监控面板 | 管理员 | 实时数据监控       |
 | /screen       | 大屏展示   | 公开  | 投屏到大屏幕       |
 | /admin/config | 活动配置管理 | 管理员 | 修改人数上限等      |
+| /admin/users  | 账号管理   | 管理员 | 新增/禁用/删除账号   |
 | /admin/logs   | 操作日志审计 | 管理员 | 查看操作记录       |
 | /admin/report | 数据报表导出 | 管理员 | 导出 Excel/CSV |
 

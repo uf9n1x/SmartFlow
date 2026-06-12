@@ -5,10 +5,6 @@
       <el-icon :size="24"><Minus /></el-icon>
       <h1>出场登记 - 工作人员</h1>
       <div class="header-nav">
-        <router-link to="/dashboard" class="nav-btn">
-          <el-icon><DataAnalysis /></el-icon>
-          <span>仪表盘</span>
-        </router-link>
         <router-link to="/screen" class="nav-btn">
           <el-icon><Monitor /></el-icon>
           <span>大屏</span>
@@ -95,7 +91,7 @@
 /** 工作人员出场登记页面 - 公安蓝风格，出场操作用红色/橙色系 */
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Minus, DataAnalysis, Monitor, SwitchButton } from '@element-plus/icons-vue'
+import { Minus, Monitor, SwitchButton } from '@element-plus/icons-vue'
 import { useStaffStore } from '@/stores/staff'
 
 const router = useRouter()

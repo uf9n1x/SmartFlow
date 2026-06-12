@@ -94,9 +94,9 @@ async function handleLogin() {
   try {
     await authStore.login(form.username, form.password)
     ElMessage.success('登录成功')
-    // 跳转到重定向页面或控制台
-    const redirect = (route.query.redirect as string) || '/dashboard'
-    router.push(redirect)
+    // 根据角色跳转：管理员 → Dashboard，工作人员 → 进场登记
+    const redirect = route.query.redirect as string
+    router.push(redirect || (authStore.isAdmin ? '/dashboard' : '/staff/entry'))
   } catch {
     // 错误提示已在 request 拦截器中统一处理
   } finally {

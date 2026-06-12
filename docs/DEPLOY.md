@@ -18,7 +18,7 @@
 | 组件 | 最低版本 | 用途 | 下载 |
 |------|----------|------|------|
 | Python | 3.12+ | 后端运行 | https://www.python.org/downloads/ |
-| Node.js | 18+ | 前端构建运行 | https://nodejs.org/（推荐 LTS 版本） |
+| Node.js | 20+ | 前端构建运行 | https://nodejs.org/（推荐 LTS 版本） |
 | MySQL | 8.0+ | 数据库 | https://dev.mysql.com/downloads/mysql/ |
 | Redis | 7+ | 缓存计数器 | https://redis.io/download/ |
 | Docker | 24+ | Docker 部署（可选） | https://www.docker.com/ |
@@ -58,7 +58,7 @@ mkdir -p ./docker-data/redis
 
 ```bash
 # 进入项目根目录
-cd 区域人数管控统计系统
+cd SmartFlow
 
 # 复制并编辑环境变量
 cp .env.example .env
@@ -102,14 +102,17 @@ docker-compose logs frontend
 
 ### 6. 访问
 
-| 地址 | 说明 |
-|------|------|
-| http://你的IP | 前端主页面（Nginx 80 端口） |
-| http://你的IP/entry | 游客进场 |
-| http://你的IP/screen | 大屏展示 |
-| http://你的IP:8000/docs | API 文档 |
+| 地址 | 说明 | 权限 |
+|------|------|------|
+| http://你的IP | 游客进场（默认首页） | 公开 |
+| http://你的IP/exit | 游客出场 | 公开 |
+| http://你的IP/login | 工作人员登录 | 公开 |
+| http://你的IP/screen | 大屏展示 | 公开 |
+| http://你的IP/dashboard | 数据监控面板 | 需管理员 |
+| http://你的IP/admin/users | 账号管理 | 需管理员 |
+| http://你的IP/admin/logs | 操作日志审计 | 需管理员 |
 
-> Docker 方式使用 Nginx 统一代理，**只对外暴露 80 端口**，8000 端口仅内部通信。
+> Docker 方式使用 Nginx 统一代理，**只对外暴露 80 端口**。
 
 ### 7. 首次启动后的必要操作
 
@@ -139,7 +142,11 @@ docker compose logs backend | grep -i "init"
 
 访问 `http://你的IP/dashboard` 并登录，页面应显示"已连接"状态和实时人数数据。
 
-### 8. 常用 Docker 命令
+### 8. 添加工作人员账号
+
+管理员登录后访问 `http://你的IP/admin/users` 即可在后台页面中新增、禁用、删除工作人员账号，无需手动操作数据库。
+
+### 10. 常用 Docker 命令
 
 ```bash
 docker-compose ps                   # 查看服务状态
@@ -308,8 +315,13 @@ npm run dev
 
 打开浏览器访问：
 - 游客进场：http://localhost:5173/entry
+- 游客出场：http://localhost:5173/exit
+- 登录页面：http://localhost:5173/login（admin / admin123）
+- 工作人员进场：http://localhost:5173/staff/entry
+- 数据监控面板：http://localhost:5173/dashboard
+- 账号管理：http://localhost:5173/admin/users
+- 活动配置：http://localhost:5173/admin/config
 - 大屏展示：http://localhost:5173/screen
-- 登录页面：http://localhost:5173/login
 - API 文档：http://localhost:8000/docs
 
 ---
@@ -332,8 +344,8 @@ python3.12 --version
 #### 第二步：安装 Node.js 18+
 
 ```bash
-# 使用 NodeSource 官方源
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# 使用 NodeSource 官方源（Node.js 20）
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install nodejs -y
 
 # 验证
@@ -404,7 +416,7 @@ EXIT;
 
 ```bash
 # 在项目根目录
-cd /你的路径/区域人数管控统计系统
+cd /你的路径/SmartFlow
 cp .env.example .env
 nano .env    # 或用 vim 编辑
 ```
@@ -467,8 +479,13 @@ npm run dev
 #### 第十步：访问
 
 - http://localhost:5173/entry — 游客进场
-- http://localhost:5173/screen — 大屏展示
+- http://localhost:5173/exit — 游客出场
 - http://localhost:5173/login — 登录（admin / admin123）
+- http://localhost:5173/staff/entry — 工作人员进场
+- http://localhost:5173/dashboard — 数据监控面板
+- http://localhost:5173/screen — 大屏展示
+- http://localhost:5173/admin/users — 账号管理
+- http://localhost:5173/admin/config — 活动配置
 - http://localhost:8000/docs — API 文档
 
 ---

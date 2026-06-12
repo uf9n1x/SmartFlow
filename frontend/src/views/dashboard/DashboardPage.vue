@@ -47,6 +47,23 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <el-dropdown trigger="hover" class="nav-dropdown" v-if="authStore.isAdmin">
+          <span class="nav-btn nav-btn-dropdown">
+            <el-icon><Setting /></el-icon>
+            <span>管理后台</span>
+            <el-icon class="dropdown-arrow"><ArrowDown /></el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item>
+                <router-link to="/admin/users">账号管理</router-link>
+              </el-dropdown-item>
+              <el-dropdown-item divided>
+                <router-link to="/admin/logs">操作日志</router-link>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <el-button class="logout-btn" @click="handleLogout" :icon="SwitchButton" text>
           退出
         </el-button>
@@ -321,9 +338,11 @@ import { ElMessage } from 'element-plus'
 import { put } from '@/utils/request'
 import { useWebSocket } from '@/composables/useWebSocket'
 import { useDashboardStore } from '@/stores/dashboard'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
 const store = useDashboardStore()
+const authStore = useAuthStore()
 
 /** 当前悬停的卡片 key（用于动画） */
 const hoveredCard = ref<string | null>(null)

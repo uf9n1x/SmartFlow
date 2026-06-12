@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/dashboard/DashboardPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: '/screen',
@@ -63,6 +63,12 @@ const routes: RouteRecordRaw[] = [
     path: '/admin/report',
     name: 'AdminReport',
     component: () => import('@/views/admin/ReportPage.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true },
+  },
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: () => import('@/views/admin/UserManagePage.vue'),
     meta: { requiresAuth: true, requiresAdmin: true },
   },
 ]
@@ -104,7 +110,7 @@ router.beforeEach((to, _from, next) => {
       const userStr = localStorage.getItem('user')
       const user = userStr ? JSON.parse(userStr) : null
       if (user?.role !== 'admin') {
-        next({ name: 'Dashboard' })
+        next({ name: 'StaffEntry' })
         return
       }
     } catch {
