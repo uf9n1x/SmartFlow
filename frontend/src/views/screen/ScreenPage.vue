@@ -56,20 +56,34 @@
         <div class="chart-panel">
           <div class="panel-header">
             <h3 class="panel-title">进出场趋势</h3>
-            <el-select v-model="trendInterval" size="small" style="width: 110px" @change="fetchTrendData">
-              <el-option :value="10" label="10分钟" />
-              <el-option :value="30" label="30分钟" />
-              <el-option :value="60" label="1小时" />
-              <el-option :value="360" label="6小时" />
-              <el-option :value="1440" label="1天" />
-            </el-select>
+            <div class="trend-controls">
+              <el-date-picker
+                v-model="trendDateRange"
+                type="daterange"
+                size="small"
+                range-separator="至"
+                start-placeholder="开始"
+                end-placeholder="结束"
+                style="width: 230px"
+                value-format="YYYY-MM-DD"
+                :disabled-date="disabledDate"
+                @change="onDateRangeChange"
+              />
+              <el-select v-model="trendInterval" size="small" style="width: 110px" @change="onIntervalChange">
+                <el-option :value="10" label="10分钟" />
+                <el-option :value="30" label="30分钟" />
+                <el-option :value="60" label="1小时" />
+                <el-option :value="360" label="6小时" />
+                <el-option :value="1440" label="1天" />
+              </el-select>
+            </div>
           </div>
           <v-chart class="chart" :option="lineChartOption" autoresize />
         </div>
 
         <!-- 3. 进场/出场占比饼图 -->
         <div class="chart-panel">
-          <h3 class="panel-title">今日进出占比</h3>
+          <h3 class="panel-title">进出占比</h3>
           <v-chart class="chart chart-pie" :option="pieChartOption" autoresize />
         </div>
       </section>
@@ -297,15 +311,54 @@ interface TrendPoint {
   remainingCapacity: number
 }
 
+/** 趋势图日期范围（默认今天） */
+const todayStr = new Date().toISOString().slice(0, 10)
+const trendDateRange = ref<[string, string]>([todayStr, todayStr])
+
 /** 趋势图时间间隔（分钟） */
 const trendInterval = ref(30)
 
 const trendData = ref<TrendPoint[]>([])
 
+/** 禁止选择未来日期 */
+const disabledDate = (time: Date) => time.getTime() > Date.now()
+
+/** 日期范围变化时：超过 1 天自动切换到 6 小时间隔 */
+const onDateRangeChange = (val: [string, string] | null) => {
+  if (!val) return
+  const [start, end] = val
+  const days = (new Date(end).getTime() - new Date(start).getTime()) / 86400000
+  if (days >= 1 && trendInterval.value < 360) {
+    trendInterval.value = 360
+  }
+  fetchTrendData()
+}
+
+/** 间隔切换时：6h/1天 自动扩展到近 3 天 */
+const onIntervalChange = (val: number) => {
+  if (val >= 360) {
+    const end = new Date()
+    const start = new Date(end)
+    start.setDate(start.getDate() - 2)
+    trendDateRange.value = [
+      start.toISOString().slice(0, 10),
+      end.toISOString().slice(0, 10),
+    ]
+  }
+  fetchTrendData()
+}
+
 /** 获取趋势数据 */
 const fetchTrendData = async () => {
   try {
-    const res = await axios.get('/api/v1/report/trend', { params: { interval: trendInterval.value } })
+    const [start, end] = trendDateRange.value
+    const res = await axios.get('/api/v1/report/trend', {
+      params: {
+        start_date: start,
+        end_date: end,
+        interval: trendInterval.value,
+      }
+    })
     trendData.value = res.data.time_points || []
   } catch (err) {
     console.error('获取趋势数据失败', err)
