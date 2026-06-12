@@ -55,7 +55,7 @@ async def visitor_entry(redis: Redis, db: AsyncSession, count: int, ip: str, use
         max_people = config.max_people
 
     current = await get_current_people(redis)
-    if current >= max_people:
+    if current + count > max_people:
         raise CapacityFullError("当前活动区域人数已达到最大上限，请您等待")
 
     # Redis 原子增加

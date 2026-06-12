@@ -98,17 +98,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { UserFilled, EditPen } from '@element-plus/icons-vue'
 import { useVisitorStore } from '@/stores/visitor'
+import { useWebSocket } from '@/composables/useWebSocket'
 
 const visitorStore = useVisitorStore()
 
 /** 本次出场人数 */
 const count = ref(1)
 
+/** WebSocket 实时同步容量数据 */
+const { data: wsData, connect: wsConnect } = useWebSocket('/api/v1/ws/dashboard')
+watch(wsData, (val: any) => {
+  if (val && val.current_people !== undefined) {
+    visitorStore.currentPeople = val.current_people
+    visitorStore.maxCapacity = val.max_people ?? 500
+    visitorStore.isFull = visitorStore.currentPeople >= visitorStore.maxCapacity
+  }
+})
+
 onMounted(() => {
   visitorStore.checkCapacity()
+  wsConnect()
 })
 
 /**

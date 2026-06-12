@@ -88,10 +88,11 @@
 
 <script setup lang="ts">
 /** 工作人员进场登记页面 - 公安蓝风格 */
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Plus, Monitor, SwitchButton } from '@element-plus/icons-vue'
 import { useStaffStore } from '@/stores/staff'
+import { useWebSocket } from '@/composables/useWebSocket'
 
 const router = useRouter()
 const staffStore = useStaffStore()
@@ -100,7 +101,19 @@ const { loading, quickCounts } = staffStore
 const customCount = ref(1)
 const activeQuickCount = ref<number | null>(null)
 
-onMounted(() => { staffStore.fetchCapacity() })
+/** WebSocket 实时同步容量数据 */
+const { data: wsData, connect: wsConnect } = useWebSocket('/api/v1/ws/dashboard')
+watch(wsData, (val: any) => {
+  if (val && val.current_people !== undefined) {
+    staffStore.currentPeople = val.current_people
+    staffStore.maxPeople = val.max_people ?? 500
+  }
+})
+
+onMounted(() => {
+  staffStore.fetchCapacity()
+  wsConnect()
+})
 
 /** 退出登录 */
 function handleLogout() {

@@ -2,15 +2,28 @@
 """工作人员进出场服务"""
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from core.config import settings
 from models.people_log import PeopleLog, OperationType, SourceType
+from models.activity_config import ActivityConfig
 
 
 async def staff_entry(redis: Redis, db: AsyncSession, count: int, operator_id: int):
     """工作人员进场登记"""
     if count < 1 or count > settings.MAX_STAFF_COUNT:
         raise ValueError(f"单次人数范围为 1~{settings.MAX_STAFF_COUNT}")
+
+    # 检查人数上限（与游客通道一致）
+    max_people = settings.MAX_PEOPLE
+    config = (await db.execute(select(ActivityConfig).limit(1))).scalar_one_or_none()
+    if config:
+        max_people = config.max_people
+
+    current = await redis.get("activity:current_people")
+    current = int(current) if current else 0
+    if current + count > max_people:
+        raise ValueError("当前活动区域人数已达到最大上限，无法继续登记进场")
 
     # Redis 原子增加
     new_count = await redis.incrby("activity:current_people", count)
